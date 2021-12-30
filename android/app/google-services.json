@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "836400525594",
+    "project_id": "fir-flutterfirst",
+    "storage_bucket": "fir-flutterfirst.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836400525594:android:ad5a8e22c04d7074a17ca3",
+        "android_client_info": {
+          "package_name": "tech.bsahli.firebase_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836400525594-5jevnmtcim5c209i2uh3086k239rkttm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdmiCO6chSgWIgqThYXne9OaYdCGjOGok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836400525594-5jevnmtcim5c209i2uh3086k239rkttm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
