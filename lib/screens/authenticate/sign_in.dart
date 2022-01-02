@@ -1,4 +1,5 @@
 import 'package:firebase_flutter/services/auth.dart';
+import 'package:firebase_flutter/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -60,14 +61,10 @@ class _SignInState extends State<SignIn> {
                   email = val;
                 });
               },
-              decoration: InputDecoration(
-                hintText: 'Email',
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
+              decoration: textInputDecoration.copyWith(
+                  border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              )),
             ),
             SizedBox.fromSize(
               size: Size.fromHeight(20.0),
@@ -83,14 +80,10 @@ class _SignInState extends State<SignIn> {
                   password = val;
                 });
               },
-              decoration: InputDecoration(
-                hintText: 'Password',
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
+              decoration: textInputDecoration.copyWith(
+            border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            )).copyWith(hintText: 'Password'),
             ),
             SizedBox.fromSize(
               size: Size.fromHeight(20.0),
