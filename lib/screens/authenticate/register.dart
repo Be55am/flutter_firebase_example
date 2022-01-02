@@ -1,3 +1,4 @@
+import 'package:firebase_flutter/models/user.dart';
 import 'package:firebase_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String confirmPassword = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -118,10 +120,25 @@ class _RegisterState extends State<Register> {
               ),
               onPressed: () async {
                 if(_formKey.currentState!.validate()){
-                  print('valid');
+                  User? user = await _authService.registerWithEmailAndPassword(email, password);
+                  if(user == null){
+                    setState(() {
+                      error = 'Sign up Failed !';
+                    });
+                  }
+                  else{
+                    print(user);
+                  }
                 }
               },
               child: Text('Register'),
+            ),
+            SizedBox.fromSize(
+              size: Size.fromHeight(20.0),
+            ),
+            Text(
+              error,
+              style: TextStyle(color: Colors.red, fontSize: 14.0),
             ),
           ]),
         ),
