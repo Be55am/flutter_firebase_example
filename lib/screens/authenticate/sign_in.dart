@@ -13,9 +13,12 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final AuthService _authService = AuthService();
 
+  final _formKey = GlobalKey<FormState>();
+
   //text field state
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +30,12 @@ class _SignInState extends State<SignIn> {
         title: Text('Sign In'),
         actions: [
           TextButton.icon(
-            icon: Icon(Icons.person,
+            icon: Icon(
+              Icons.person,
               color: Colors.white,
             ),
-            label: Text('Register',
+            label: Text(
+              'Register',
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
@@ -42,11 +47,13 @@ class _SignInState extends State<SignIn> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Form(
+          key: _formKey,
           child: Column(children: [
             SizedBox.fromSize(
               size: Size.fromHeight(20.0),
             ),
             TextFormField(
+              validator: (val) => val!.isEmpty ? 'Write a valid email' : null,
               onChanged: (val) {
                 //Do something with the user input.
                 setState(() {
@@ -67,6 +74,9 @@ class _SignInState extends State<SignIn> {
             ),
             TextFormField(
               obscureText: true,
+              validator: (val) => val!.length < 6
+                  ? 'Password should be longer than 6 chars'
+                  : null,
               onChanged: (val) {
                 //Do something with the user input.
                 setState(() {
@@ -90,9 +100,20 @@ class _SignInState extends State<SignIn> {
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.pink),
               ),
               onPressed: () async {
-                print(email + ' ' + password);
+                if(_formKey.currentState!.validate()){
+                  dynamic res = await _authService.signInWithEmailAndPassword(email, password);
+                  if(res == null){
+                    setState(() {
+                      error = 'Error ! Unable to sign in';
+                    });
+                  }
+                }
               },
               child: Text('Sign In'),
+            ),
+            Text(
+              error,
+              style: TextStyle(color: Colors.red),
             ),
           ]),
         ),
