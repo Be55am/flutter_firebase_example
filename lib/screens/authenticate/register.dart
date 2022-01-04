@@ -13,7 +13,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final AuthService _authService = AuthService();
-  final _formKey  = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   String email = '';
   String password = '';
@@ -34,8 +34,9 @@ class _RegisterState extends State<Register> {
               Icons.login,
               color: Colors.white,
             ),
-            label: Text('Sign In',
-            style: TextStyle(color: Colors.white),
+            label: Text(
+              'Sign In',
+              style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
               widget.toggleView();
@@ -45,6 +46,9 @@ class _RegisterState extends State<Register> {
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/coffee_bg.png'), fit: BoxFit.cover)),
         child: Form(
           key: _formKey,
           child: Column(children: [
@@ -72,7 +76,8 @@ class _RegisterState extends State<Register> {
               size: Size.fromHeight(20.0),
             ),
             TextFormField(
-              validator: (val) => val!.length < 6 ? 'Enter a password 6+ chars long' : null,
+              validator: (val) =>
+                  val!.length < 6 ? 'Enter a password 6+ chars long' : null,
               obscureText: true,
               onChanged: (val) {
                 //Do something with the user input.
@@ -94,8 +99,8 @@ class _RegisterState extends State<Register> {
             ),
             TextFormField(
               obscureText: true,
-              validator: (val) => val != password ? 'Password dosn\'t match' : null,
-
+              validator: (val) =>
+                  val != password ? 'Password dosn\'t match' : null,
               onChanged: (val) {
                 //Do something with the user input.
                 setState(() {
@@ -119,14 +124,14 @@ class _RegisterState extends State<Register> {
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.pink),
               ),
               onPressed: () async {
-                if(_formKey.currentState!.validate()){
-                  User? user = await _authService.registerWithEmailAndPassword(email, password);
-                  if(user == null){
+                if (_formKey.currentState!.validate()) {
+                  User? user = await _authService.registerWithEmailAndPassword(
+                      email, password);
+                  if (user == null) {
                     setState(() {
                       error = 'Sign up Failed !';
                     });
-                  }
-                  else{
+                  } else {
                     print(user);
                   }
                 }
