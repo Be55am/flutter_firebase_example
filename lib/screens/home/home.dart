@@ -12,16 +12,16 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    void _showSettingsPanel(){
-      showModalBottomSheet(context: context, builder: (context) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-          child: SettingsForm(),
-        );
-      });
+    void _showSettingsPanel() {
+      showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+              child: SettingsForm(),
+            );
+          });
     }
-
 
     return StreamProvider<List<Brew>?>.value(
       value: DatabaseService(uid: '').brews,
@@ -45,19 +45,26 @@ class Home extends StatelessWidget {
               label: Text(''),
             ),
             TextButton.icon(
-                onPressed: (){
-                  _showSettingsPanel();
-                },
-                icon: Icon(
-                  Icons.settings,
-                  color: Colors.white,
-
-                ),
-                label: Text(''),
+              onPressed: () {
+                _showSettingsPanel();
+              },
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              label: Text(''),
             )
           ],
         ),
-        body: const BrewList(),
+        body: Container(
+          child: BrewList(),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/coffee_bg.png'),
+              fit: BoxFit.cover
+            )
+          ),
+        ),
       ),
     );
   }

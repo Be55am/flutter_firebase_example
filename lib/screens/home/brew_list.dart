@@ -15,21 +15,26 @@ class _BrewListState extends State<BrewList> {
     final brews = Provider.of<List<Brew>?>(context);
 
     if (brews != null)
-      return ListView.builder(
-        itemCount: brews.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.brown[brews[index].strength],
+      return
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 0.0),
+          child: ListView.builder(
+          itemCount: brews.length,
+          itemBuilder: (context, index) {
+            return Card(
+              margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.brown[brews[index].strength],
+                  backgroundImage: AssetImage('assets/coffee_icon.png'),
+                ),
+                title: Text(brews[index].name),
+                subtitle: Text('Takes ${brews[index].sugars} sugars'),
               ),
-              title: Text(brews[index].name),
-              subtitle: Text('Takes ${brews[index].sugars} sugars'),
-            ),
-          );
-        },
-      );
+            );
+          },
+      ),
+        );
     else
       return Container();
   }
