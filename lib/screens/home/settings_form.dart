@@ -17,13 +17,16 @@ class _SettingsFormState extends State<SettingsForm> {
   final _formKey = GlobalKey<FormState>();
   final List<String> sugars = ['0', '1', '2', '3', '4'];
 
-  late String _currentName;
+  late String _currentName = '';
   late String _currentSugars = '';
-  late int _currentStrength = 100;
+  late int _currentStrength = 0 ;
+
+  late DatabaseService databaseService;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    databaseService = DatabaseService(uid: user.uid);
     return StreamBuilder<UserData>(
         stream: DatabaseService(uid: user.uid).userData,
         builder: (context, snapshot) {
@@ -68,10 +71,10 @@ class _SettingsFormState extends State<SettingsForm> {
                   ),
                   SizedBox(height: 20.0),
                   Slider(
-                    value: _currentStrength == 100 ? userData.strength.toDouble(): _currentStrength.toDouble(),
+                    value: _currentStrength == 0 ? userData.strength.toDouble(): _currentStrength.toDouble(),
                     min: 100,
-                    activeColor: Colors.brown[_currentStrength],
-                    inactiveColor: Colors.brown[_currentStrength],
+                    activeColor: Colors.brown[_currentStrength == 0 ? userData.strength : _currentStrength],
+                    inactiveColor: Colors.brown[_currentStrength == 0 ? userData.strength : _currentStrength],
                     divisions: 8,
                     max: 900,
                     onChanged: (value) {
@@ -82,10 +85,17 @@ class _SettingsFormState extends State<SettingsForm> {
                   ),
                   SizedBox(height: 20.0),
                   ElevatedButton(
-                    onPressed: () {
-                      print(_currentName);
-                      print(_currentSugars);
-                      print(_currentStrength);
+                    onPressed: () async {
+                      if(_formKey.currentState!.validate()){
+                        print(_currentStrength);
+                        await databaseService.updateUserData(
+                            _currentSugars == '' ? userData.sugars : _currentSugars,
+                            _currentName == '' ? userData.name : _currentName,
+                            _currentStrength == 0 ? userData.strength : _currentStrength
+                        );
+                        Navigator.pop(context);
+                      }
+
                     },
                     child: Text('Save'),
                     style: ElevatedButton.styleFrom(primary: Colors.pink),
