@@ -24,37 +24,40 @@ class AuthService {
 
   // sign in with phone number
   Future signInWithPhoneNumber(String phoneNumber, BuildContext context) async {
-    _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: (AuthCredential authCredential){
-          _auth.signInWithCredential(authCredential).then((value) => {
-            print(value.toString())
-          });
-        },
-        verificationFailed: (FirebaseAuthException exception){
-          print(exception);
-        },
-        codeSent: (String verificationId, int? forceResendingToken) async {
-          //show dialog to take input from the user
-          print('You should ask User to insert the verification code manually');
+    _auth
+        .verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      timeout: Duration(seconds: 60),
+      verificationCompleted: (AuthCredential authCredential) {
+        _auth
+            .signInWithCredential(authCredential)
+            .then((value) => {print(value.toString())});
+      },
+      verificationFailed: (FirebaseAuthException exception) {
+        print(exception);
+      },
+      codeSent: (String verificationId, int? forceResendingToken) async {
+        //show dialog to take input from the user
+        print('You should ask User to insert the verification code manually');
 
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: CodeAlert(verificationId, _auth),
-                );
-              });
-        },
-        codeAutoRetrievalTimeout: (String verificationId){
-          verificationId = verificationId;
-          print(verificationId);
-          print("Timout");
-        },
-    ).catchError((e){print(e);});
-
+        showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 200),
+                child: CodeAlert(verificationId, _auth),
+              );
+            });
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        verificationId = verificationId;
+        print(verificationId);
+        print("Timout");
+      },
+    )
+        .catchError((e) {
+      print(e);
+    });
   }
 
   // auth change user stream
@@ -66,14 +69,12 @@ class AuthService {
   }
 
 // Sign in with Email and Password
-  Future signInWithEmailAndPassword(String email, String password) async{
-    try{
+  Future signInWithEmailAndPassword(String email, String password) async {
+    try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
+          email: email, password: password);
       return _userFromFirebaseUser(userCredential.user);
-    }catch(e){
+    } catch (e) {
       print(e);
       return null;
     }
@@ -82,15 +83,27 @@ class AuthService {
 // Register with Email and Password
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      );
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       await DatabaseService(uid: userCredential.user!.uid)
           .updateUserData('0', 'new crew member', 100);
       return _userFromFirebaseUser(userCredential.user);
     } catch (e) {
       print(e);
+      return null;
+    }
+  }
+
+  //validate sms code and sign in
+  Future signInWithSmsCode(String smsCode, String verificationId) async {
+    try {
+      AuthCredential authCredential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: smsCode);
+      UserCredential userCredential =
+          await _auth.signInWithCredential(authCredential);
+      return _userFromFirebaseUser(userCredential.user);
+    } catch (e) {
+      print('Sign in With SMS Code : Error : ' + e.toString());
       return null;
     }
   }

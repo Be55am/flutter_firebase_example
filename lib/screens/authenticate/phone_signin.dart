@@ -13,13 +13,13 @@ class PhoneSignIn extends StatefulWidget {
 }
 
 class _PhoneSignInState extends State<PhoneSignIn> {
-
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   bool loading = false;
   String phoneNumber = '';
   String error = '';
+
   @override
   Widget build(BuildContext context) {
     if (loading)
@@ -52,9 +52,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/coffee_bg.png'),
-                  fit: BoxFit.cover
-              )
-          ),
+                  fit: BoxFit.cover)),
           child: Form(
             key: _formKey,
             child: Column(children: [
@@ -62,17 +60,21 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                 size: Size.fromHeight(20.0),
               ),
               TextFormField(
-                validator: (val) => val!.isEmpty ? 'Write a valid phone number' : null,
+                validator: (val) =>
+                    val!.isEmpty ? 'Write a valid phone number' : null,
+                keyboardType: TextInputType.phone,
                 onChanged: (val) {
                   //Do something with the user input.
                   setState(() {
                     phoneNumber = val;
                   });
                 },
-                decoration: textInputDecoration.copyWith(
-                    border: OutlineInputBorder(
+                decoration: textInputDecoration
+                    .copyWith(
+                        border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                    )).copyWith(hintText: 'Phone Number'),
+                    ))
+                    .copyWith(hintText: 'Phone Number'),
               ),
               SizedBox.fromSize(
                 size: Size.fromHeight(20.0),
@@ -80,7 +82,7 @@ class _PhoneSignInState extends State<PhoneSignIn> {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.pink),
+                      MaterialStateProperty.all<Color>(Colors.pink),
                 ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -88,16 +90,17 @@ class _PhoneSignInState extends State<PhoneSignIn> {
                       loading = true;
                     });
                     print(phoneNumber);
-                    dynamic res = await _authService.signInWithPhoneNumber(phoneNumber, context);
-                    print(res);
-                    setState(() {
-                      loading = false;
-                    });
-                    if (res == null) {
-                      setState(() {
-                        error = 'Error ! Unable to sign in';
-                      });
-                    }
+                    dynamic res = await _authService.signInWithPhoneNumber(
+                        phoneNumber, context);
+                    print('signin with phone number: ' + res);
+                    // setState(() {
+                    //   loading = false;
+                    // });
+                    // if (res == null) {
+                    //   setState(() {
+                    //     error = 'Error ! Unable to sign in';
+                    //   });
+                    // }
                   }
                 },
                 child: Text('Sign In'),
@@ -112,5 +115,4 @@ class _PhoneSignInState extends State<PhoneSignIn> {
       );
     }
   }
-
 }

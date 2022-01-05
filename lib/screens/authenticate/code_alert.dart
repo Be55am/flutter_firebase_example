@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_flutter/services/auth.dart';
 import 'package:firebase_flutter/shared/constants.dart';
+import 'package:firebase_flutter/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class CodeAlert extends StatefulWidget {
@@ -16,23 +18,26 @@ class CodeAlert extends StatefulWidget {
 class _CodeAlertState extends State<CodeAlert> {
   String _code = '';
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  String _error = '';
+  AuthService auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    if (!_isLoading) {
+      return Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 20.0),
-
-            Text('Enter SMS Verification Code ',
+            Text(
+              'Enter SMS Verification Code ',
               style: TextStyle(
                 fontSize: 20.0,
               ),
             ),
             SizedBox(height: 20.0),
-
             TextFormField(
               validator: (val) => val!.isEmpty ? 'Enter Validation Code' : null,
               onChanged: (val) {
@@ -56,22 +61,37 @@ class _CodeAlertState extends State<CodeAlert> {
               ),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  var _credential = PhoneAuthProvider.credential(
-                      verificationId: widget.verificationId, smsCode: _code);
-                  print('Credentials '+ _credential.toString());
-                  dynamic res =
-                      await widget.auth.signInWithCredential(_credential);
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  dynamic res = await auth.signInWithSmsCode(
+                      _code, widget.verificationId);
+                  setState(() {
+                    _isLoading = false;
+                  });
                   Navigator.pop(context);
-                  print('RES : ' + res);
                   if (res == null) {
-                    print('ERROR');
+                    print('ERROR Signing in with SMS code');
+                    setState(() {
+                      _error = 'Error Signing in with SMS code';
+                    });
                   }
                 }
               },
               child: Text('Sign In'),
             ),
+            SizedBox.fromSize(
+              size: Size.fromHeight(20.0),
+            ),
+            Text(
+              _error,
+              style: TextStyle(color: Colors.red, fontSize: 14.0),
+            ),
           ],
         ),
-    );
+      );
+    } else {
+      return Loading();
+    }
   }
 }
