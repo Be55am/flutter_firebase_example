@@ -1,3 +1,4 @@
+import 'package:firebase_flutter/screens/authenticate/phone_signin.dart';
 import 'package:firebase_flutter/screens/authenticate/register.dart';
 import 'package:firebase_flutter/screens/authenticate/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -10,17 +11,20 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool showSignIn = true;
+  int authView = 0;
 
-  void toggleView() {
-    setState(() => showSignIn = !showSignIn);
+  void toggleView(int view) {
+    setState(() => authView = view);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (showSignIn)
+    if (authView == 0)
       return SignIn(toggleView: toggleView);
-    else
+    else if(authView == 1)
       return Register(toggleView: toggleView);
+    else {
+      return PhoneSignIn(toggleView: toggleView);
+    }
   }
 }

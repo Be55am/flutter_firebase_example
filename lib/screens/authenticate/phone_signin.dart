@@ -3,27 +3,23 @@ import 'package:firebase_flutter/shared/constants.dart';
 import 'package:firebase_flutter/shared/loading.dart';
 import 'package:flutter/material.dart';
 
-class SignIn extends StatefulWidget {
+class PhoneSignIn extends StatefulWidget {
   final Function toggleView;
 
-  SignIn({required this.toggleView});
+  PhoneSignIn({required this.toggleView});
 
   @override
-  _SignInState createState() => _SignInState();
+  _PhoneSignInState createState() => _PhoneSignInState();
 }
 
-class _SignInState extends State<SignIn> {
-  final AuthService _authService = AuthService();
+class _PhoneSignInState extends State<PhoneSignIn> {
 
+  final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   bool loading = false;
-
-  //text field state
-  String email = '';
-  String password = '';
+  String phoneNumber = '';
   String error = '';
-
   @override
   Widget build(BuildContext context) {
     if (loading)
@@ -54,10 +50,10 @@ class _SignInState extends State<SignIn> {
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/coffee_bg.png'),
-              fit: BoxFit.cover
-            )
+              image: DecorationImage(
+                  image: AssetImage('assets/coffee_bg.png'),
+                  fit: BoxFit.cover
+              )
           ),
           child: Form(
             key: _formKey,
@@ -66,38 +62,17 @@ class _SignInState extends State<SignIn> {
                 size: Size.fromHeight(20.0),
               ),
               TextFormField(
-                validator: (val) => val!.isEmpty ? 'Write a valid email' : null,
+                validator: (val) => val!.isEmpty ? 'Write a valid phone number' : null,
                 onChanged: (val) {
                   //Do something with the user input.
                   setState(() {
-                    email = val;
+                    phoneNumber = val;
                   });
                 },
                 decoration: textInputDecoration.copyWith(
                     border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                )),
-              ),
-              SizedBox.fromSize(
-                size: Size.fromHeight(20.0),
-              ),
-              TextFormField(
-                obscureText: true,
-                validator: (val) => val!.length < 6
-                    ? 'Password should be longer than 6 chars'
-                    : null,
-                onChanged: (val) {
-                  //Do something with the user input.
-                  setState(() {
-                    password = val;
-                  });
-                },
-                decoration: textInputDecoration
-                    .copyWith(
-                        border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                    ))
-                    .copyWith(hintText: 'Password'),
+                    )).copyWith(hintText: 'Phone Number'),
               ),
               SizedBox.fromSize(
                 size: Size.fromHeight(20.0),
@@ -105,15 +80,16 @@ class _SignInState extends State<SignIn> {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.pink),
+                  MaterialStateProperty.all<Color>(Colors.pink),
                 ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
                       loading = true;
                     });
-                    dynamic res = await _authService.signInWithEmailAndPassword(
-                        email, password);
+                    print(phoneNumber);
+                    dynamic res = await _authService.signInWithPhoneNumber(phoneNumber, context);
+                    print(res);
                     setState(() {
                       loading = false;
                     });
@@ -126,15 +102,6 @@ class _SignInState extends State<SignIn> {
                 },
                 child: Text('Sign In'),
               ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.blueAccent,
-                ),
-                onPressed: () {
-                  widget.toggleView(3);
-                },
-                child: Text('Login With Phone'),
-              ),
               Text(
                 error,
                 style: TextStyle(color: Colors.red),
@@ -145,4 +112,5 @@ class _SignInState extends State<SignIn> {
       );
     }
   }
+
 }
